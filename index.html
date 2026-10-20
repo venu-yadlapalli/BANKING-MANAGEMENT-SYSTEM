@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Banking App</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <h1>🏦 Simple Banking App</h1>
+
+  <div class="balances">
+    <b>Alice: Rs.<span id="a">5000</span></b>
+    <b>Bob &nbsp;: Rs.<span id="b">3000</span></b>
+  </div>
+
+  <div class="card">
+    <select id="act">
+      <option value="deposit">Deposit</option>
+      <option value="withdraw">Withdraw</option>
+      <option value="transfer">Transfer</option>
+    </select>
+
+    <select id="acc"><option value="a">Alice</option><option value="b">Bob</option></select>
+    <input  id="amt" type="number" placeholder="Amount (Rs.)" min="1"/>
+    <select id="to" style="display:none"><option value="b">Bob</option><option value="a">Alice</option></select>
+
+    <button onclick="run()">Submit</button>
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    const bal = { a: 5000, b: 3000 };
+    const name = { a: "Alice", b: "Bob" };
+
+    document.getElementById("act").onchange = function() {
+      document.getElementById("to").style.display = this.value === "transfer" ? "block" : "none";
+    };
+
+    function run() {
+      const act = document.getElementById("act").value;
+      const acc = document.getElementById("acc").value;
+      const amt = +document.getElementById("amt").value;
+      const to  = document.getElementById("to").value;
+      const msg = document.getElementById("msg");
+
+      if (!amt || amt <= 0) return (msg.textContent = "Enter valid amount.", msg.className = "err");
+      if ((act === "withdraw" || act === "transfer") && amt > bal[acc])
+        return (msg.textContent = "Insufficient funds!", msg.className = "err");
+
+      if (act === "deposit")        { bal[acc] += amt; }
+      else if (act === "withdraw")  { bal[acc] -= amt; }
+      else { bal[acc] -= amt; bal[to] += amt; }
+
+      document.getElementById("a").textContent = bal.a;
+      document.getElementById("b").textContent = bal.b;
+      msg.textContent = act + " of Rs." + amt + " done!";
+      msg.className = "ok";
+    }
+  </script>
+</body>
+</html>
